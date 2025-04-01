@@ -1,9 +1,7 @@
 <template>
-	<footer class="relative pt-[5rem] text-primary-blue">
+	<footer class="pt-[5rem] fixed bottom-0 left-0 w-full text-primary-blue overflow-visible">
 		<div
-			class="bg-cover bg-[87.3%] w-full absolute h-[13rem]"
-			:style="{ backgroundImage: `url(&quot;${hills}&quot;)` }"></div>
-		<div class="flex justify-center items-center gap-x-[2.3rem] text-[2.7rem] h-[15rem] bg-[#30243c] mt-[4rem]">
+			class="flex justify-center items-center gap-x-[2.3rem] text-[2.7rem] pb-[4rem] mt-[4rem] md:text-[3rem] lg:text-[3.3rem]">
 			<Icon
 				:name="item.link"
 				:alt="`${item.alt} icon`"
@@ -11,6 +9,7 @@
 				:key="index"
 				class="z-[100]" />
 		</div>
+		<img :src="hills" alt="" class="absolute bottom-0 w-full h-[17rem]" />
 	</footer>
 </template>
 
