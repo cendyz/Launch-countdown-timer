@@ -1,5 +1,5 @@
 <template>
-	<footer class="relative pt-[5rem] pb-[15rem] text-primary-blue">
+	<footer class="relative pt-[5rem] text-primary-blue">
 		<div
 			class="bg-cover bg-[87.3%] w-full absolute h-[13rem]"
 			:style="{ backgroundImage: `url(&quot;${hills}&quot;)` }"></div>
