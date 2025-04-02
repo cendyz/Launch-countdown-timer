@@ -21,28 +21,71 @@
 <script setup lang="ts">
 import stars from 'assets/images/bg-stars.svg'
 interface Timer {
-	time: string
+	time: Ref<string | number>
 	whatTime: string
 }
 
+let seconds = ref<number>(15)
+let minutes = ref<number>(2)
+let hours = ref<number>(23)
+let days = ref<number>(8)
+
 const timerData = ref<Timer[]>([
 	{
-		time: '08',
+		time: days,
 		whatTime: 'days',
 	},
 	{
-		time: '23',
+		time: hours,
 		whatTime: 'hours',
 	},
 	{
-		time: '55',
+		time: minutes,
 		whatTime: 'minutes',
 	},
 	{
-		time: '41',
+		time: seconds,
 		whatTime: 'seconds',
 	},
 ])
+
+const handleCount = (): void => {
+	setInterval(() => {
+		seconds.value--
+	}, 1000)
+}
+
+onMounted(() => {
+	handleCount()
+})
+
+watch(
+	() => seconds.value,
+	newValue => {
+		if (newValue === 0) {
+			seconds.value = 59
+			minutes.value--
+		}
+	}
+)
+watch(
+	() => minutes.value,
+	newValue => {
+		if (newValue < 0) {
+			minutes.value = 59
+			hours.value--
+		}
+	}
+)
+watch(
+	() => hours.value,
+	newValue => {
+		if (newValue === 0) {
+			seconds.value = 23
+			days.value--
+		}
+	}
+)
 </script>
 
 <style scoped lang="scss">
