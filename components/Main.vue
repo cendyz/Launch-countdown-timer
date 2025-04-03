@@ -7,7 +7,9 @@
 			<div class="" v-for="(item, index) in timerData" :key="index">
 				<div
 					class="w-[6.5rem] h-[6.5rem] grid place-items-center relative before:absolute before:top-0 before:left-0 before:w-full before:h-[50%] before:bg-primary-blue before:rounded-lg after:absolute after:bottom-0 after:left-0 after:w-full after:h-[50%] after:bg-primary-blue after:rounded-lg before:opacity-[10%] after:opacity-20 md:w-[7.5rem] md:h-[7.5rem]">
-					<p class="text-primary-red text-[3rem] md:text-[4rem] lg:text-[4.5rem]">{{ item.time }}</p>
+					<p class="text-primary-red text-[3rem] md:text-[4rem] lg:text-[4.5rem]">
+						{{ item.time < 10 ? `${zero}${item.time}` : item.time }}
+					</p>
 				</div>
 				<p class="uppercase text-[.7rem] md:text-[.8rem] lg:text-[.9rem] text-primary-blue tracking-[.4rem] mt-[1rem]">
 					{{ item.whatTime }}
@@ -21,14 +23,17 @@
 <script setup lang="ts">
 import stars from 'assets/images/bg-stars.svg'
 interface Timer {
-	time: Ref<string | number>
+	time: Ref<number>
 	whatTime: string
 }
 
-let seconds = ref<number>(15)
-let minutes = ref<number>(2)
+let seconds = ref<number>(41)
+let minutes = ref<number>(55)
 let hours = ref<number>(23)
 let days = ref<number>(8)
+const zero = 0
+const isZero = computed(() => seconds.value + minutes.value + hours.value + days.value === 0)
+let intervalId: ReturnType<typeof setInterval> | null = null
 
 const timerData = ref<Timer[]>([
 	{
@@ -50,8 +55,31 @@ const timerData = ref<Timer[]>([
 ])
 
 const handleCount = (): void => {
-	setInterval(() => {
-		seconds.value--
+	if (intervalId) return
+	intervalId = setInterval(() => {
+		if (isZero.value) {
+			clearInterval(intervalId!)
+			intervalId = null
+			return
+		}
+
+		if (seconds.value === 0) {
+			if (minutes.value > 0) {
+				seconds.value = 59
+				minutes.value--
+			} else if (hours.value > 0) {
+				seconds.value = 59
+				minutes.value = 59
+				hours.value--
+			} else if (days.value > 0) {
+				seconds.value = 59
+				minutes.value = 59
+				hours.value = 23
+				days.value--
+			}
+		} else {
+			seconds.value--
+		}
 	}, 1000)
 }
 
@@ -59,33 +87,12 @@ onMounted(() => {
 	handleCount()
 })
 
-watch(
-	() => seconds.value,
-	newValue => {
-		if (newValue === 0) {
-			seconds.value = 59
-			minutes.value--
-		}
+watch(isZero, newValue => {
+	if (newValue) {
+		clearInterval(intervalId!)
+		intervalId = null
 	}
-)
-watch(
-	() => minutes.value,
-	newValue => {
-		if (newValue < 0) {
-			minutes.value = 59
-			hours.value--
-		}
-	}
-)
-watch(
-	() => hours.value,
-	newValue => {
-		if (newValue === 0) {
-			seconds.value = 23
-			days.value--
-		}
-	}
-)
+})
 </script>
 
 <style scoped lang="scss">
