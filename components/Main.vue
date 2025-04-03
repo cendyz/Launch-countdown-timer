@@ -54,15 +54,10 @@ const timerData = ref<Timer[]>([
 	},
 ])
 
-const handleCount = (): void => {
+
+const countTime = (): void => {
 	if (intervalId) return
 	intervalId = setInterval(() => {
-		if (isZero.value) {
-			clearInterval(intervalId!)
-			intervalId = null
-			return
-		}
-
 		if (seconds.value === 0) {
 			if (minutes.value > 0) {
 				seconds.value = 59
@@ -83,15 +78,15 @@ const handleCount = (): void => {
 	}, 1000)
 }
 
-onMounted(() => {
-	handleCount()
-})
-
 watch(isZero, newValue => {
 	if (newValue) {
 		clearInterval(intervalId!)
 		intervalId = null
 	}
+})
+
+onMounted(() => {
+	countTime()
 })
 </script>
 
