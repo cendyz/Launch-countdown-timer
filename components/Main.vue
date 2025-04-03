@@ -54,7 +54,6 @@ const timerData = ref<Timer[]>([
 	},
 ])
 
-
 const countTime = (): void => {
 	if (intervalId) return
 	intervalId = setInterval(() => {
