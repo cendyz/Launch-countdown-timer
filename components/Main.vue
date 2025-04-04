@@ -4,19 +4,34 @@
 			we're launching soon
 		</h1>
 		<div class="mt-[5rem] flex justify-center gap-x-[1.8rem] w-full">
-			<div class="" v-for="(item, index) in timerData" :key="index">
+			<div v-for="(item, index) in timerData" :key="index">
 				<div
-					class="w-[6.5rem] h-[6.5rem] grid place-items-center relative before:absolute before:top-0 before:left-0 before:w-full before:h-[50%] before:bg-primary-blue before:rounded-lg after:absolute after:bottom-0 after:left-0 after:w-full after:h-[50%] after:bg-primary-blue after:rounded-lg before:opacity-[10%] after:opacity-20 md:w-[7.5rem] md:h-[7.5rem] lg:w-[13rem] lg:h-[13rem]">
-					<p class="text-primary-red text-[3rem] md:text-[4rem] lg:text-[6.5rem]">
-						{{ item.time < 10 ? `${zero}${item.time}` : item.time }}
-					</p>
+					class="w-[6.5rem] h-[6.5rem] inline-flex flex-col place-items-center lg:gap-y-[.15rem] md:w-[7.5rem] md:h-[7.5rem] lg:w-[13rem] lg:h-[13rem]">
+					<div
+						class="bg-[#2d2c45] leading-[1.62] before:top-0 before:bg-[#2d2c45] checkA"
+						:class="topBottomCardStyles"
+						:data-time="`${item.time < 10 ? `${zero}${item.time}` : item.time}`"
+						:key="item.time">
+						<p :class="numColorStyles">
+							{{ item.time < 10 ? `${zero}${item.time}` : item.time }}
+						</p>
+					</div>
+					<div
+						class="bg-[#35354e] leading-[0] before:bottom-0 before:bg-[#35354e] checkB"
+						:class="topBottomCardStyles"
+						:key="item.time"
+						:data-time="`${item.time < 10 ? `${zero}${item.time}` : item.time}`">
+						<p :class="numColorStyles">
+							{{ item.time < 10 ? `${zero}${item.time}` : item.time }}
+						</p>
+					</div>
 				</div>
 				<p class="uppercase text-[.7rem] md:text-[.8rem] lg:text-[.9rem] text-primary-blue tracking-[.4rem] mt-[1rem]">
 					{{ item.whatTime }}
 				</p>
 			</div>
 		</div>
-		<img :src="stars" aria-hidden="true" alt="" class="absolute left-0 top-0 w-full h-full" />
+		<img :src="stars" aria-hidden="true" alt="" class="absolute left-0 top-0 w-full h-full z-[-1]" />
 	</main>
 </template>
 
@@ -27,35 +42,23 @@ interface Timer {
 	whatTime: string
 }
 
+const topBottomCardStyles =
+	'rounded-xl w-full h-full overflow-hidden relative before:w-full before:h-full before:absolute before:left-0 before:text-primary-red before:text-[8rem] before:content-[attr(data-time)]  before:rounded-xl before:border-transparent perspective-distant'
+const numColorStyles = 'text-primary-red text-[3rem] md:text-[4rem] lg:text-[8rem] relative'
 let seconds = ref<number>(41)
-let minutes = ref<number>(55)
+let minutes = ref<number>(5)
 let hours = ref<number>(23)
 let days = ref<number>(8)
 const zero = 0
 const isZero = computed(() => seconds.value + minutes.value + hours.value + days.value === 0)
 let intervalId: ReturnType<typeof setInterval> | null = null
 
-const timerData = ref<Timer[]>([
-	{
-		time: days,
-		whatTime: 'days',
-	},
-	{
-		time: hours,
-		whatTime: 'hours',
-	},
-	{
-		time: minutes,
-		whatTime: 'minutes',
-	},
-	{
-		time: seconds,
-		whatTime: 'seconds',
-	},
-])
-
-const countTime = (): void => {
+const handleCount = (): void => {
 	if (intervalId) return
+	if (isZero) {
+		clearInterval(intervalId!)
+		intervalId = null
+	}
 	intervalId = setInterval(() => {
 		if (seconds.value === 0) {
 			if (minutes.value > 0) {
@@ -77,34 +80,80 @@ const countTime = (): void => {
 	}, 1000)
 }
 
-watch(isZero, newValue => {
-	if (newValue) {
-		clearInterval(intervalId!)
-		intervalId = null
-	}
-})
+const timerData = ref<Timer[]>([
+	{
+		time: days,
+		whatTime: 'days',
+	},
+	{
+		time: hours,
+		whatTime: 'hours',
+	},
+	{
+		time: minutes,
+		whatTime: 'minutes',
+	},
+	{
+		time: seconds,
+		whatTime: 'seconds',
+	},
+])
 
 onMounted(() => {
-	countTime()
+	handleCount()
+})
+
+watch(isZero, newValue => {
+	if (newValue) {
+		handleCount()
+	}
 })
 </script>
 
 <style scoped lang="scss">
-.befAft {
-	position: relative;
-	&::before,
-	&::after {
-		position: absolute;
-		content: '';
-		left: 0;
+.checkA {
+	&::before {
+		transform-origin: bottom;
+		animation: topFlip 0.5s ease-in;
+	}
+}
+
+.checkB {
+	&::before {
+		transform-origin: top;
+		transform: rotateX(-90deg);
+		animation: botFlip 0.5s 0.5s ease-out;
+	}
+}
+
+@keyframes topFlip {
+	0% {
+		scale: 1;
 	}
 
-	&::before {
-		top: 0;
-		width: full;
-		height: 50%;
-		background: red;
-		z-index: 100;
+	80% {
+		background-color: #35354e;
+	}
+
+	100% {
+		scale: 1.1;
+		transform: rotateX(-90deg);
+		border-color: #20202f;
+		background-color: #2d2c45;
+	}
+}
+
+@keyframes botFlip {
+	0% {
+		scale: 1.1;
+		background-color: #2d2c45;
+	}
+
+	100% {
+		transform: rotateX(0deg);
+		border-color: #20202f;
+		scale: 1;
+		background-color: #35354e;
 	}
 }
 </style>
