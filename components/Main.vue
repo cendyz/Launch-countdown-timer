@@ -6,9 +6,9 @@
 		<div class="mt-[5rem] flex justify-center gap-x-[1.8rem] w-full">
 			<div v-for="(item, index) in timerData" :key="index">
 				<div
-					class="w-[6.5rem] h-[6.5rem] inline-flex flex-col place-items-center lg:gap-y-[.15rem] md:w-[7.5rem] md:h-[7.5rem] lg:w-[13rem] lg:h-[13rem]">
+					class="w-[6.5rem] h-[6.5rem] inline-flex flex-col place-items-center gap-y-[.15rem] md:w-[7.5rem] md:h-[7.5rem] lg:w-[13rem] lg:h-[13rem]">
 					<div
-						class="bg-[#2d2c45] leading-[1.62] before:top-0 before:bg-[#2d2c45] checkA"
+						class="bg-[#2d2c45] leading-[2.1] md:leading-[1.9] lg:leading-[1.6] before:top-0 before:bg-[#2d2c45] checkA"
 						:class="topBottomCardStyles"
 						:data-time="`${item.time < 10 ? `${zero}${item.time}` : item.time}`"
 						:key="item.time">
@@ -17,7 +17,7 @@
 						</p>
 					</div>
 					<div
-						class="bg-[#35354e] leading-[0] before:bottom-0 before:bg-[#35354e] checkB"
+						class="bg-[#35354e] leading-[0] xl:leading-[0] before:bottom-0 before:bg-[#35354e] checkB"
 						:class="topBottomCardStyles"
 						:key="item.time"
 						:data-time="`${item.time < 10 ? `${zero}${item.time}` : item.time}`">
@@ -43,7 +43,7 @@ interface Timer {
 }
 
 const topBottomCardStyles =
-	'rounded-xl w-full h-full overflow-hidden relative before:w-full before:h-full before:absolute before:left-0 before:text-primary-red before:text-[8rem] before:content-[attr(data-time)]  before:rounded-xl before:border-transparent perspective-distant'
+	'rounded-xl w-full h-full overflow-hidden relative before:w-full before:h-full before:absolute before:left-0 before:text-primary-red before:text-[3rem] before:md:text-[4rem] before:lg:text-[8rem] before:content-[attr(data-time)]  before:rounded-xl before:border-transparent perspective-distant'
 const numColorStyles = 'text-primary-red text-[3rem] md:text-[4rem] lg:text-[8rem] relative'
 let seconds = ref<number>(41)
 let minutes = ref<number>(5)
